@@ -1,10 +1,25 @@
 import streamlit as st
 import os
+import subprocess
+import sys
 from agent import run_agent_query
 from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
+
+# Auto-initialize database for Cloud deployment
+def init_db():
+    db_path = os.path.join(os.getcwd(), "db.sqlite3")
+    if not os.path.exists(db_path):
+        st.info("Initializing database for the first time...")
+        # Run migrations
+        subprocess.run([sys.executable, "manage.py", "migrate"], check=True)
+        # Seed data
+        subprocess.run([sys.executable, "ingest_data.py"], check=True)
+        st.success("Database initialized!")
+
+init_db()
 
 # Page configuration
 st.set_page_config(
