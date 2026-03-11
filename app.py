@@ -158,7 +158,7 @@ with st.container():
 st.markdown("---")
 
 # Suggested Questions Expander
-with st.expander("💡 Suggested Questions (Backed by Database)"):
+with st.expander("Suggested Questions"):
     st.write("""
     1. **What is the potato production in Ludhiana, Punjab for the year 2023-24?**
     2. **How many MT of tomato were produced in Pune, Maharashtra in 2023-24?**
