@@ -6,8 +6,8 @@ from langchain_community.utilities import SQLDatabase
 from langchain_community.agent_toolkits import create_sql_agent
 from dotenv import load_dotenv
 
-# Load environment variables from .env if present
-load_dotenv()
+# Load environment variables with override to ensure .env takes precedence
+load_dotenv(override=True)
 
 def get_agent(provider="OpenAI", model_name=None, api_key=None):
     # Use SQLite database created by Django
