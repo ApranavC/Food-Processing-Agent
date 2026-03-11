@@ -3,10 +3,20 @@ import os
 import subprocess
 import sys
 from agent import run_agent_query
-from dotenv import load_dotenv
+from dotenv import load_dotenv, dotenv_values
 
-# Load environment variables
-load_dotenv()
+# Load environment variables with override to ensure .env takes precedence
+load_dotenv(override=True)
+
+# Get keys explicitly defined in .env to prevent shell environment leakage
+ENV_CONFIG = dotenv_values(".env")
+
+# Debug: Print detected keys (masked) to terminal for troubleshooting
+print(f"--- Environment Detection ---")
+print(f"Detected OPENAI_API_KEY: {'Yes (Active)' if os.getenv('OPENAI_API_KEY') else 'No'}")
+print(f"Detected GOOGLE_API_KEY: {'Yes (Active)' if os.getenv('GOOGLE_API_KEY') else 'No'}")
+print(f"Detected GROQ_API_KEY: {'Yes (Active)' if os.getenv('GROQ_API_KEY') else 'No'}")
+print(f"-----------------------------")
 
 # Auto-initialize database for Cloud deployment
 def init_db():
@@ -93,18 +103,24 @@ st.markdown("""
 st.markdown("<h1 class='header'>Intelligent Food Agent</h1>", unsafe_allow_html=True)
 
 # Determine available providers based on API keys
+# We check ENV_CONFIG to ensure we respect the .env file strictly when running locally
 available_providers = []
+
 openai_key = os.getenv("OPENAI_API_KEY")
 if validate_key(openai_key):
-    available_providers.append("OpenAI")
+    if not os.path.exists(".env") or "OPENAI_API_KEY" in ENV_CONFIG:
+        available_providers.append("OpenAI")
     
 google_key = os.getenv("GOOGLE_API_KEY")
 if validate_key(google_key):
-    available_providers.append("Google Gemini")
+    # Only show Gemini if it's explicitly in .env (if .env exists)
+    if not os.path.exists(".env") or "GOOGLE_API_KEY" in ENV_CONFIG:
+        available_providers.append("Google Gemini")
     
 groq_key = os.getenv("GROQ_API_KEY")
 if validate_key(groq_key):
-    available_providers.append("Groq")
+    if not os.path.exists(".env") or "GROQ_API_KEY" in ENV_CONFIG:
+        available_providers.append("Groq")
 
 # Fallback if no keys are found
 if not available_providers:
