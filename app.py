@@ -156,7 +156,21 @@ with st.container():
 
 # Main Chat Interface
 st.markdown("---")
-st.write("**Example Question:** What is the potato production in Ludhiana, Punjab for the year 2023-24?")
+
+# Suggested Questions Expander
+with st.expander("💡 Suggested Questions (Backed by Database)"):
+    st.write("""
+    1. **What is the potato production in Ludhiana, Punjab for the year 2023-24?**
+    2. **How many MT of tomato were produced in Pune, Maharashtra in 2023-24?**
+    3. **Show me all operational cold storage projects in Maharashtra.**
+    4. **List cold storage projects in Ludhiana, Punjab.**
+    5. **What are the benefits of the Mega Food Park Scheme?**
+    6. **Who is eligible for the PMKSY scheme?**
+    7. **What is the application process for the CEFPPC scheme?**
+    8. **Tell me about the Maharashtra Cold Chain Hub project.**
+    9. **What is the capacity of the Punjab Apple Store?**
+    10. **Show me schemes offered by the Ministry of Food Processing Industries.**
+    """)
 
 query = st.text_input("Ask a question about food processing infrastructure:", placeholder="e.g., Show me cold storage projects in Maharashtra")
 
