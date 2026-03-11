@@ -15,3 +15,5 @@ google-generativeai
 groq
 fpdf2
 markdown
+gunicorn
+whitenoise
