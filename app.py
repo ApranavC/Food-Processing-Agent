@@ -23,8 +23,8 @@ init_db()
 
 # Page configuration
 st.set_page_config(
-    page_title="🌾 Food Agent AI",
-    page_icon="🌾",
+    page_title="Food Agent AI",
+    page_icon="🌾", # Keep this as it's the official brand icon, or remove if user wants NO emojis
     layout="centered",
     initial_sidebar_state="collapsed"
 )
@@ -67,17 +67,31 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-st.markdown("<h1 class='header'>🌾 Intelligent Food Agent</h1>", unsafe_allow_html=True)
+st.markdown("<h1 class='header'>Intelligent Food Agent</h1>", unsafe_allow_html=True)
+
+# Determine available providers based on API keys
+available_providers = []
+if os.getenv("OPENAI_API_KEY"):
+    available_providers.append("OpenAI")
+if os.getenv("GOOGLE_API_KEY"):
+    available_providers.append("Google Gemini")
+if os.getenv("GROQ_API_KEY"):
+    available_providers.append("Groq")
+
+# Fallback if no keys are found
+if not available_providers:
+    st.error("No API keys found in environment. Please configure your .env file or Streamlit Secrets.")
+    st.stop()
 
 # Provider and Model Selection in the main area
 with st.container():
     col1, col2 = st.columns(2)
     with col1:
-        provider = st.selectbox("LLM Provider", ["OpenAI", "Google Gemini", "Groq"], index=1)
+        provider = st.selectbox("LLM Provider", available_providers, index=0)
     with col2:
         if provider == "OpenAI":
             model_name = st.selectbox("Model", ["gpt-4o", "gpt-4o-mini"], index=0)
-            api_key = os.getenv("OPENAI_API_KEY", "")
+            api_key = os.getenv("OPENAI_API_KEY")
         elif provider == "Google Gemini":
             model_name = st.selectbox("Model", [
                 "models/gemini-2.0-flash", 
@@ -86,7 +100,7 @@ with st.container():
                 "models/gemini-1.5-flash",
                 "models/gemini-1.5-pro"
             ], index=1)
-            api_key = os.getenv("GOOGLE_API_KEY", "")
+            api_key = os.getenv("GOOGLE_API_KEY")
         else: # Groq
             model_name = st.selectbox("Model", [
                 "llama-3.3-70b-versatile",
@@ -94,23 +108,18 @@ with st.container():
                 "llama-3.2-11b-text-preview",
                 "mixtral-8x7b-32768"
             ], index=0)
-            api_key = os.getenv("GROQ_API_KEY", "")
-
-if not api_key:
-    st.warning(f"⚠️ {provider} API Key not found in environment. Please check your .env or Cloud Secrets.")
+            api_key = os.getenv("GROQ_API_KEY")
 
 # Main Chat Interface
-query = st.text_input("Ask a question (e.g., 'What schemes are available for potato processing in Punjab?'):")
+query = st.text_input("Ask a question about food processing infrastructure:")
 
-if st.button("Query AI Agent"):
-    if not api_key:
-        st.error(f"Please provide an {provider} API Key in the sidebar.")
-    elif query:
-        with st.spinner(f"🧠 {provider} Agent is thinking using {model_name}..."):
+if st.button("Run Query"):
+    if query:
+        with st.spinner(f"Agent is processing your request using {model_name}..."):
             try:
                 response = run_agent_query(query, provider=provider, model_name=model_name, api_key=api_key)
                 st.markdown("<div class='chat-card'>", unsafe_allow_html=True)
-                st.subheader(f"💡 {provider} Recommendation")
+                st.subheader(f"System Recommendation")
                 st.write(response)
                 st.markdown("</div>", unsafe_allow_html=True)
             except Exception as e:
@@ -120,4 +129,4 @@ if st.button("Query AI Agent"):
 
 # Footer
 st.markdown("---")
-st.caption("Powered by MoFPI Data, LangChain, and Streamlit. Built for rural entrepreneurs and farmers.")
+st.caption("Powered by MoFPI Data, LangChain, and Streamlit.")
