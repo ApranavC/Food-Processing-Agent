@@ -64,6 +64,9 @@ st.markdown("""
         border-radius: 10px;
         margin-bottom: 20px;
     }
+    .stDeployButton {
+        display:none;
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -111,7 +114,10 @@ with st.container():
             api_key = os.getenv("GROQ_API_KEY")
 
 # Main Chat Interface
-query = st.text_input("Ask a question about food processing infrastructure:")
+st.markdown("---")
+st.write("**Example Question:** What is the potato production in Ludhiana, Punjab for the year 2023-24?")
+
+query = st.text_input("Ask a question about food processing infrastructure:", placeholder="e.g., Show me cold storage projects in Maharashtra")
 
 if st.button("Run Query"):
     if query:
