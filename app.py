@@ -97,6 +97,19 @@ st.markdown("""
     div[data-testid="stStatusWidget"] {
         visibility: hidden;
     }
+    .stAppToolbar {
+        display: none !important;
+    }
+    [data-testid="appCreatorAvatar"] {
+        display: none !important;
+    }
+    section[data-testid="stSidebar"] [data-testid="stViewDetails"] {
+        display: none !important;
+    }
+    /* Hide the viewer badges in the bottom right of Streamlit Cloud */
+    [data-testid="stViewerBadge"] {
+        display: none !important;
+    }
     </style>
     """, unsafe_allow_html=True)
 
