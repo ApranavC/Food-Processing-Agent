@@ -1,6 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import ColdStorageViewSet, SchemeViewSet, CropProductionViewSet
+from .api_views import QueryAgentView
 
 router = DefaultRouter()
 router.register(r'cold-storages', ColdStorageViewSet)
@@ -9,4 +10,5 @@ router.register(r'crop-production', CropProductionViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('query/', QueryAgentView.as_view(), name='query-agent'),
 ]
