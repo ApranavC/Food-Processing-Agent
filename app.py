@@ -36,7 +36,7 @@ def validate_key(key):
 # Page configuration
 st.set_page_config(
     page_title="Food Agent AI",
-    page_icon="🌾", # Keep this as it's the official brand icon, or remove if user wants NO emojis
+    page_icon="🏢", # Changed to a generic building icon or none
     layout="centered",
     initial_sidebar_state="collapsed"
 )
@@ -78,6 +78,15 @@ st.markdown("""
     }
     .stDeployButton {
         display:none;
+    }
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    div[data-testid="stDecoration"] {
+        display:none;
+    }
+    div[data-testid="stStatusWidget"] {
+        visibility: hidden;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -147,4 +156,3 @@ if st.button("Run Query"):
 
 # Footer
 st.markdown("---")
-st.caption("Powered by MoFPI Data, LangChain, and Streamlit.")
