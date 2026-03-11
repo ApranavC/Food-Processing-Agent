@@ -36,7 +36,6 @@ def validate_key(key):
 # Page configuration
 st.set_page_config(
     page_title="Food Agent AI",
-    page_icon="🏢", # Changed to a generic building icon or none
     layout="centered",
     initial_sidebar_state="collapsed"
 )
@@ -95,11 +94,16 @@ st.markdown("<h1 class='header'>Intelligent Food Agent</h1>", unsafe_allow_html=
 
 # Determine available providers based on API keys
 available_providers = []
-if validate_key(os.getenv("OPENAI_API_KEY")):
+openai_key = os.getenv("OPENAI_API_KEY")
+if validate_key(openai_key):
     available_providers.append("OpenAI")
-if validate_key(os.getenv("GOOGLE_API_KEY")):
+    
+google_key = os.getenv("GOOGLE_API_KEY")
+if validate_key(google_key):
     available_providers.append("Google Gemini")
-if validate_key(os.getenv("GROQ_API_KEY")):
+    
+groq_key = os.getenv("GROQ_API_KEY")
+if validate_key(groq_key):
     available_providers.append("Groq")
 
 # Fallback if no keys are found
