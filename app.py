@@ -25,8 +25,8 @@ init_db()
 st.set_page_config(
     page_title="🌾 Food Agent AI",
     page_icon="🌾",
-    layout="wide",
-    initial_sidebar_state="expanded"
+    layout="centered",
+    initial_sidebar_state="collapsed"
 )
 
 # Custom CSS for premium look
@@ -48,69 +48,56 @@ st.markdown("""
     .header {
         color: #1b5e20;
         text-align: center;
-        padding: 20px;
+        padding: 10px 0;
+        margin-bottom: 0;
     }
     .chat-card {
         background-color: white;
         padding: 20px;
         border-radius: 10px;
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        margin-top: 20px;
+    }
+    .config-row {
+        background-color: #e8f5e9;
+        padding: 15px;
+        border-radius: 10px;
         margin-bottom: 20px;
     }
     </style>
     """, unsafe_allow_html=True)
 
-st.markdown("<h1 class='header'>🌾 Intelligent Food Processing Infrastructure Agent</h1>", unsafe_allow_html=True)
-st.write("Welcome! This AI assistant helps you navigate government schemes, find cold storage facilities, and explore crop processing opportunities based on MoFPI data.")
+st.markdown("<h1 class='header'>🌾 Intelligent Food Agent</h1>", unsafe_allow_html=True)
 
-# Sidebar
-with st.sidebar:
-    st.header("Settings")
-    
-    provider = st.radio("Select AI Provider", ["OpenAI", "Google Gemini", "Groq"], index=1)
-    
-    if provider == "OpenAI":
-        api_key = st.text_input("OpenAI API Key", type="password", value=os.getenv("OPENAI_API_KEY", ""))
-        model_name = st.selectbox("Select OpenAI Model", ["gpt-4o", "gpt-4o-mini"], index=0)
-        if api_key:
-            os.environ["OPENAI_API_KEY"] = api_key
-    elif provider == "Google Gemini":
-        api_key = st.text_input("Google AI Studio API Key", type="password", value=os.getenv("GOOGLE_API_KEY", ""))
-        model_name = st.selectbox("Select Gemini Model", [
-            "models/gemini-2.0-flash", 
-            "models/gemini-3-flash-preview", 
-            "models/gemini-3-pro-preview",
-            "models/gemini-1.5-flash",
-            "models/gemini-1.5-pro"
-        ], index=1)
-        if api_key:
-            os.environ["GOOGLE_API_KEY"] = api_key
-    else: # Groq
-        api_key = st.text_input("Groq API Key", type="password", value=os.getenv("GROQ_API_KEY", ""))
-        model_name = st.selectbox("Select Groq Model", [
-            "llama-3.3-70b-versatile",
-            "llama-3.1-8b-instant",
-            "llama-3.2-11b-text-preview",
-            "mixtral-8x7b-32768"
-        ], index=0)
-        if api_key:
-            os.environ["GROQ_API_KEY"] = api_key
-            
-    if api_key:
-        st.success(f"{provider} API Key updated!")
-    else:
-        st.info(f"Please enter your {provider} API Key to proceed.")
-        if provider == "Google Gemini":
-            st.markdown("[Get a free Gemini API Key here](https://aistudio.google.com/app/apikey)")
+# Provider and Model Selection in the main area
+with st.container():
+    col1, col2 = st.columns(2)
+    with col1:
+        provider = st.selectbox("LLM Provider", ["OpenAI", "Google Gemini", "Groq"], index=1)
+    with col2:
+        if provider == "OpenAI":
+            model_name = st.selectbox("Model", ["gpt-4o", "gpt-4o-mini"], index=0)
+            api_key = os.getenv("OPENAI_API_KEY", "")
+        elif provider == "Google Gemini":
+            model_name = st.selectbox("Model", [
+                "models/gemini-2.0-flash", 
+                "models/gemini-3-flash-preview", 
+                "models/gemini-3-pro-preview",
+                "models/gemini-1.5-flash",
+                "models/gemini-1.5-pro"
+            ], index=1)
+            api_key = os.getenv("GOOGLE_API_KEY", "")
+        else: # Groq
+            model_name = st.selectbox("Model", [
+                "llama-3.3-70b-versatile",
+                "llama-3.1-8b-instant",
+                "llama-3.2-11b-text-preview",
+                "mixtral-8x7b-32768"
+            ], index=0)
+            api_key = os.getenv("GROQ_API_KEY", "")
 
-    st.markdown("---")
-    st.subheader("Capabilities")
-    st.markdown("""
-    - 🔍 Search Government Schemes
-    - ❄️ Locate Cold Storage Projects
-    - 📈 Analyze Crop Production
-    - 💡 Get Recommendations
-    """)
+if not api_key:
+    st.warning(f"⚠️ {provider} API Key not found in environment. Please check your .env or Cloud Secrets.")
 
 # Main Chat Interface
 query = st.text_input("Ask a question (e.g., 'What schemes are available for potato processing in Punjab?'):")
