@@ -21,6 +21,18 @@ def init_db():
 
 init_db()
 
+def validate_key(key):
+    """Helper to check if a key is a real key and not a placeholder or empty."""
+    if not key:
+        return False
+    # Remove markers of common placeholders or comments
+    key = key.strip()
+    if key in ["", "...", "your_key_here", "your_openai_key_here", "your_google_key_here", "your_groq_key_here"]:
+        return False
+    if len(key) < 20: # All real keys from these providers are long
+        return False
+    return True
+
 # Page configuration
 st.set_page_config(
     page_title="Food Agent AI",
@@ -74,11 +86,11 @@ st.markdown("<h1 class='header'>Intelligent Food Agent</h1>", unsafe_allow_html=
 
 # Determine available providers based on API keys
 available_providers = []
-if os.getenv("OPENAI_API_KEY"):
+if validate_key(os.getenv("OPENAI_API_KEY")):
     available_providers.append("OpenAI")
-if os.getenv("GOOGLE_API_KEY"):
+if validate_key(os.getenv("GOOGLE_API_KEY")):
     available_providers.append("Google Gemini")
-if os.getenv("GROQ_API_KEY"):
+if validate_key(os.getenv("GROQ_API_KEY")):
     available_providers.append("Groq")
 
 # Fallback if no keys are found
